@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Virtual</title>
+  <style>
+    :root {
+      /* MODO OSCURO - Colores base */
+      --background: #12091f;
+      --panel: #1f1233;
+      --card: #2b1745;
+      --text: #e5d6ff;
+      --text-secondary: #d6c7ff;
+      --primary: #8b5cf6;
+      --primary-light: #a855f7;
+      --secondary: #f5e9ff;
+      --accent: #a855f7;
+      --border-light: rgba(139, 92, 246, 0.3);
+      --border-lighter: rgba(139, 92, 246, 0.15);
+      --shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+      --shadow-sm: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --glow: rgba(139, 92, 246, 0.4);
+      --transition-speed: 0.4s;
+    }
+
+    /* ===== TEMA CLARO ===== */
+    html.light-mode {
+      --background: #f8f5ff;
+      --panel: #ece4ff;
+      --card: #ffffff;
+      --text: #4c1d95;
+      --text-secondary: #6b21a8;
+      --primary: #8b5cf6;
+      --primary-light: #a855f7;
+      --secondary: #5b21b6;
+      --accent: #a855f7;
+      --border-light: rgba(91, 33, 182, 0.2);
+      --border-lighter: rgba(91, 33, 182, 0.1);
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --glow: rgba(139, 92, 246, 0.2);
+      --transition-speed: 0.4s;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, var(--background) 0%, 
+                                  calc(var(--background) + 20%) 50%, 
+                                  var(--background) 100%);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    }
+
+    /* Animated gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite;
+      pointer-events: none;
+      z-index: 0;
+      transition: background var(--transition-speed) ease;
+    }
+
+    html.light-mode body::before {
+      background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes hover-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(60, 30, 80, 0.4) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-lighter);
+      animation: slideIn 0.6s ease;
+      transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    }
+
+    html.light-mode header {
+      background: linear-gradient(180deg, rgba(139, 92, 246, 0.08) 0%, transparent 100%);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+      margin-bottom: 0.5rem;
+      transition: text-shadow var(--transition-speed) ease;
+    }
+
+    header p {
+      margin: 1rem auto 0;
+      max-width: 720px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--secondary);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color var(--transition-speed) ease;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Times New Roman', Times, serif;
+      color: var(--secondary);
+      transition: color var(--transition-speed) ease;
+    }
+
+    /* App shell layout */
+    .app-shell {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 2rem;
+      padding: 2rem 2rem 3rem;
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar with Glassmorphism */
+    .sidebar {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+      height: fit-content;
+      border-radius: 24px;
+      background: rgba(42, 23, 66, 0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light);
+      padding: 2rem;
+      display: grid;
+      gap: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.6s ease 0.1s both;      transition: background var(--transition-speed) ease, 
+                  border-color var(--transition-speed) ease,
+                  box-shadow var(--transition-speed) ease;
+    }
+
+    html.light-mode .sidebar {
+      background: rgba(232, 223, 245, 0.7);    }
+
+    .sidebar div:first-child {
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 1.5rem;
+    }
+
+    .sidebar h2 {
+      margin: 0.5rem 0 0.75rem;
+      font-size: 1.6rem;
+      color: var(--secondary);
+    }
+
+    .sidebar p {
+      margin: 0;
+      color: rgba(233, 213, 255, 0.8);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .sidebar p {
+      color: rgba(107, 33, 168, 0.8);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      width: fit-content;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      transition: box-shadow var(--transition-speed) ease, background var(--transition-speed) ease;
+    }
+
+    html.light-mode .badge {
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+      color: #ffffff;
+    }
+
+    /* Navigation list */
+    .nav-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .nav-list a {
+      display: block;
+      padding: 1rem 1.25rem;
+      border-radius: 16px;
+      background: rgba(52, 27, 82, 0.4);
+      color: var(--secondary);
+      text-decoration: none;
+      border: 1px solid var(--border-light);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    html.light-mode .nav-list a {
+      background: rgba(139, 92, 246, 0.08);
+      color: var(--secondary);
+    }
+
+    .nav-list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .nav-list a:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.2);
+      color: var(--text);
+    }
+
+    html.light-mode .nav-list a:hover {
+      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.15);
+    }
+
+    .nav-list a:hover::before {
+      opacity: 0.15;
+    }
+
+    /* Main content */
+    .content {
+      display: grid;
+      gap: 2rem;
+      animation: slideIn 0.6s ease 0.2s both;
+    }
+
+    /* Hero section */
+    .hero {
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(52, 27, 82, 0.4) 0%, rgba(60, 40, 90, 0.2) 100%);
+      border: 1px solid var(--border-light);
+      padding: 2.5rem;
+      display: grid;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: background var(--transition-speed) ease,
+                  border-color var(--transition-speed) ease,
+                  box-shadow var(--transition-speed) ease;
+    }
+
+    html.light-mode .hero {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%);
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(1.75rem, 4vw, 2.8rem);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: text-shadow var(--transition-speed) ease;
+    }
+
+
+
+    .hero p {
+      margin: 0;
+      color: rgba(233, 213, 255, 0.9);
+      line-height: 1.8;
+      font-size: 1rem;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .hero p {
+      color: rgba(107, 33, 168, 0.9);
+    }
+
+    /* Buttons */
+    .config-button,
+    .chip-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.4rem;
+      border-radius: 12px;
+      border: 1px solid var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, rgba(139, 92, 246, 0.8) 100%);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .config-button::before,
+    .chip-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .config-button:hover,
+    .chip-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+      border-color: #7c3aed;
+    }
+
+    .config-button:hover::before,
+    .chip-button:hover::before {
+      opacity: 0.3;
+    }
+
+    .config-button:active,
+    .chip-button:active {
+      transform: translateY(0);
+    }
+
+    html.light-mode .config-button,
+    html.light-mode .chip-button {
+      background: linear-gradient(135deg, var(--primary) 0%, rgba(139, 92, 246, 0.8) 100%);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    html.light-mode .config-button:hover,
+    html.light-mode .chip-button:hover {
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.35);
+      border-color: #7c3aed;
+    }
+
+    /* Settings Panel */
+    .panel {
+      display: none;
+      gap: 1.5rem;
+      padding: 2rem;
+      border-radius: 20px;
+      background: rgba(52, 27, 82, 0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition-speed) ease,
+                  border-color var(--transition-speed) ease,
+                  box-shadow var(--transition-speed) ease;
+    }
+
+    html.light-mode .panel {
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .panel.visible {
+      display: grid;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .panel h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .panel label {
+      display: grid;
+      gap: 0.75rem;
+      color: rgba(233, 213, 255, 0.95);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .panel label {
+      color: rgba(107, 33, 168, 0.95);
+    }
+
+    .panel select {
+      appearance: none;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: rgba(26, 16, 44, 0.5);
+      color: var(--text);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    html.light-mode .panel select {
+      background: rgba(139, 92, 246, 0.06);
+      color: var(--text);
+    }
+
+    .panel select:hover,
+    .panel select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+      outline: none;
+    }
+
+    html.light-mode .panel select:hover,
+    html.light-mode .panel select:focus {
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+    }
+
+    .panel .status {
+      padding: 1.5rem;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%);
+      border: 1px solid var(--border-light);
+      color: var(--secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      transition: background var(--transition-speed) ease,
+                  border-color var(--transition-speed) ease,
+                  color var(--transition-speed) ease;
+    }
+
+    .panel-actions {
+      display: grid;
+      gap: 1rem;
+    }
+
+    /* Login Modal */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1200;
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+      transition: background var(--transition-speed) ease;
+    }
+
+    html.light-mode .login-overlay {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .login-overlay.visible {
+      display: flex;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 450px;
+      border-radius: 20px;
+      background: rgba(42, 23, 66, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 2.5rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-light);
+      position: relative;
+      animation: slideIn 0.3s ease;
+      transition: background var(--transition-speed) ease,
+                  border-color var(--transition-speed) ease,
+                  box-shadow var(--transition-speed) ease;
+    }
+
+    html.light-mode .login-card {
+      background: rgba(232, 223, 245, 0.85);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-card h3 {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: filter var(--transition-speed) ease;
+    }
+
+    .login-card label {
+      display: block;
+      margin-bottom: 1.25rem;
+      color: var(--secondary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .login-card label {
+      color: var(--secondary);
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: rgba(26, 16, 44, 0.6);
+      color: var(--text);
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    html.light-mode .login-card input {
+      background: rgba(139, 92, 246, 0.06);
+      color: var(--text);
+    }
+
+    .login-card input::placeholder {
+      color: rgba(233, 213, 255, 0.5);
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .login-card input::placeholder {
+      color: rgba(107, 33, 168, 0.5);
+    }
+
+    .login-card input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    html.light-mode .login-card input:focus {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+    }
+
+    .login-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .close-login {
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      border: 1px solid var(--border-light);
+      background: rgba(139, 92, 246, 0.1);
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--secondary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    html.light-mode .close-login {
+      background: rgba(139, 92, 246, 0.08);
+      color: var(--secondary);
+    }
+
+    .close-login:hover {
+      background: rgba(139, 92, 246, 0.2);
+      color: var(--accent);
+      transform: rotate(90deg);
+    }
+
+    html.light-mode .close-login:hover {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent);
+    }
+
+    /* Catalog Cards */
+    .catalogs {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    .catalog-card {
+      padding: 1.75rem;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(52, 27, 82, 0.4) 0%, rgba(60, 40, 90, 0.2) 100%);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    html.light-mode .catalog-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%);
+    }
+
+    .catalog-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .catalog-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--primary);
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25);
+    }
+
+    html.light-mode .catalog-card:hover {
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.2);
+    }
+
+    .catalog-card:hover::before {
+      opacity: 0.1;
+    }
+
+    .catalog-card strong {
+      display: block;
+      font-size: 1.15rem;
+      color: var(--secondary);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .catalog-card strong {
+      color: var(--secondary);
+    }
+
+    .catalog-card p {
+      margin: 0;
+      color: rgba(233, 213, 255, 0.8);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      transition: color var(--transition-speed) ease;
+    }
+
+    html.light-mode .catalog-card p {
+      color: rgba(107, 33, 168, 0.8);
+    }
+
+    .catalog-card .catalog-desc {
+      margin: 0;
+      color: rgba(233, 213, 255, 0.85);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+      }
+
+      .sidebar {
+        position: relative;
+        top: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 2rem 1rem 1.5rem;
+      }
+
+      header h1 {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+      }
+
+      .app-shell {
+        padding: 1rem;
+      }
+
+      .sidebar {
+        padding: 1.5rem;
+      }
+
+      .hero {
+        padding: 1.5rem;
+      }
+
+      .catalogs {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      }
+
+      .login-card {
+        padding: 2rem;
+        margin: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-list,
+      .panel-actions,
+      .login-actions {
+        gap: 0.75rem;
+      }
+
+      .config-button,
+      .chip-button {
+        padding: 0.85rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .hero {
+        padding: 1.25rem;
+      }
+
+      .sidebar {
+        gap: 1.5rem;
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Biblioteca Virtual</h1>
+    <p>Descubre mundos nuevos, administra tus préstamos y lleva tu biblioteca digital con un estilo minimalista en rosa y morado.</p>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div>
+        <span class="badge">Ajustes</span>
+        <h2>Panel lateral</h2>
+        <p>Controla idioma y género desde aquí con una experiencia suave y relajada.</p>
+      </div>
+
+      <nav class="nav-list">
+        <a href="#" id="loginLink">Inicio de sesión</a>
+        <a href="rama-registro-usuarios.js">Registro de usuarios</a>
+        <a href="rama-perfil-usuarios.js">Perfil de usuario</a>
+        <a href="rama-agregar-libros.js">Agregar libros</a>
+        <a href="rama-prestamos.js">Préstamos</a>
+        <a href="rama-devoluciones">Devoluciones</a>
+        <a href="catalogo-libro.js">Catálogo de libros</a>
+      </nav>
+
+      <button class="config-button" id="openConfig">Abrir ajustes</button>
+      <button class="config-button" id="logoutBtn" style="display:none">Cerrar sesión</button>
+
+      <section class="panel" id="configPanel">
+        <h3>Opciones</h3>
+
+        <label>
+          Idioma
+          <select id="languageSelect">
+            <option value="es">Español</option>
+            <option value="en">Inglés</option>
+          </select>
+        </label>
+
+        <label>
+          Género de libro
+          <select id="genreSelect">
+            <option value="fantasia">Fantasía</option>
+            <option value="misterio">Misterio</option>
+            <option value="romance">Romance</option>
+            <option value="ciencia">Ciencia ficción</option>
+            <option value="historia">Historia</option>
+          </select>
+        </label>
+
+        <div class="panel-actions">
+          <button class="config-button" id="toggleLang">Cambiar idioma</button>
+          <button class="config-button" id="toggleGenre">Siguiente género</button>
+          <button class="config-button" id="toggleMode">Modo oscuro / claro</button>
+        </div>
+
+        <div class="status" id="statusText">Idioma: Español · Género: Fantasía</div>
+      </section>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <h2>Bienvenido a tu biblioteca en línea</h2>
+        <p>Explora catálogos, gestiona préstamos, y disfruta de una interfaz con colores pastel, un menú lateral y un panel elegante de ajustes.</p>
+      </section>
+    </main>
+  </div>
+
+  <div class="login-overlay" id="loginOverlay" aria-hidden="true">
+    <div class="login-card" role="dialog" aria-modal="true" aria-label="Iniciar sesión">
+      <button class="close-login" id="closeLogin" aria-label="Cerrar">✕</button>
+      <h3>Iniciar sesión</h3>
+      <form id="loginForm">
+        <label>
+          Nombre de usuario
+          <input type="text" id="username" autocomplete="username" required />
+        </label>
+
+        <label>
+          Contraseña
+          <input type="password" id="password" autocomplete="current-password" required />
+        </label>
+
+        <div class="login-actions">
+          <button type="submit" class="config-button">Entrar</button>
+          <button type="button" class="config-button" id="cancelLogin">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body;
+    const configPanel = document.getElementById('configPanel');
+    const openConfig = document.getElementById('openConfig');
+    const toggleLang = document.getElementById('toggleLang');
+    const toggleGenre = document.getElementById('toggleGenre');
+    const toggleMode = document.getElementById('toggleMode');
+    const languageSelect = document.getElementById('languageSelect');
+    const genreSelect = document.getElementById('genreSelect');
+    const statusText = document.getElementById('statusText');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let isPanelVisible = false;
+
+    function updateStatus() {
+      const languageLabel = languageSelect.options[languageSelect.selectedIndex].text;
+      const genreLabel = genreSelect.options[genreSelect.selectedIndex].text;
+      statusText.textContent = `Idioma: ${languageLabel} · Género: ${genreLabel}`;
+    }
+
+    function togglePanel() {
+      isPanelVisible = !isPanelVisible;
+      configPanel.classList.toggle('visible', isPanelVisible);
+    }
+
+    openConfig.addEventListener('click', togglePanel);
+
+    toggleLang.addEventListener('click', () => {
+      languageSelect.value = languageSelect.value === 'es' ? 'en' : 'es';
+      updateStatus();
+      if (!isPanelVisible) togglePanel();
+    });
+
+    toggleGenre.addEventListener('click', () => {
+      const nextIndex = (genreSelect.selectedIndex + 1) % genreSelect.options.length;
+      genreSelect.selectedIndex = nextIndex;
+      updateStatus();
+      if (!isPanelVisible) togglePanel();
+    });
+
+    toggleMode.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light-mode');
+      const isLight = document.documentElement.classList.contains('light-mode');
+      localStorage.setItem('theme-preference', isLight ? 'light' : 'dark');
+      toggleMode.innerHTML = isLight ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+    });
+
+    languageSelect.addEventListener('change', updateStatus);
+    genreSelect.addEventListener('change', updateStatus);
+
+    updateStatus();
+
+    // Theme restoration on page load
+    const savedTheme = localStorage.getItem('theme-preference');
+    if (savedTheme === 'light') {
+      document.documentElement.classList.add('light-mode');
+      toggleMode.innerHTML = '🌙 Modo Oscuro';
+    } else {
+      toggleMode.innerHTML = '☀️ Modo Claro';
+    }
+
+    // Login modal logic
+    const loginLink = document.getElementById('loginLink');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const closeLogin = document.getElementById('closeLogin');
+    const cancelLogin = document.getElementById('cancelLogin');
+    const loginForm = document.getElementById('loginForm');
+    const catalogsContainer = document.createElement('div');
+    catalogsContainer.className = 'catalogs';
+
+    function openLogin() {
+      loginOverlay.classList.add('visible');
+      loginOverlay.setAttribute('aria-hidden', 'false');
+      document.getElementById('username').focus();
+    }
+
+    function closeLoginModal() {
+      loginOverlay.classList.remove('visible');
+      loginOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    loginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLogin();
+    });
+
+    closeLogin.addEventListener('click', closeLoginModal);
+    cancelLogin.addEventListener('click', closeLoginModal);
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      // For demo: accept any non-empty credentials
+      if (!user) return;
+      // persist session
+      localStorage.setItem('biblioteca_user', user);
+      closeLoginModal();
+      setLoggedInState(user);
+    });
+
+    function showCatalogs(username) {
+      // simple demo catalogs
+      const items = [
+        { title: 'Cuentos de hadas', desc: 'Colección infantil' },
+        { title: 'Misterios clásicos', desc: 'Novelas de suspenso' },
+        { title: 'Romances modernos', desc: 'Historias contemporáneas' },
+        { title: 'Ciencia ficción', desc: 'Futuros imaginados' }
+      ];
+
+      catalogsContainer.innerHTML = '';
+      items.forEach(it => {
+        const card = document.createElement('div');
+        card.className = 'catalog-card';
+        card.innerHTML = `<strong>${it.title}</strong><div class="catalog-desc">${it.desc}</div>`;
+        catalogsContainer.appendChild(card);
+      });
+
+      const content = document.querySelector('main.content');
+      if (content) {
+        // append catalogs below hero
+        if (!document.getElementById('catalogsSection')) {
+          const section = document.createElement('section');
+          section.id = 'catalogsSection';
+          section.style.marginTop = '1rem';
+          const heading = document.createElement('h3');
+          heading.textContent = `Catálogos disponibles para ${username}`;
+          heading.style.color = 'var(--accent)';
+          section.appendChild(heading);
+          section.appendChild(catalogsContainer);
+          content.appendChild(section);
+        }
+      }
+    }
+
+    function setLoggedInState(username) {
+      // show catalogs and update UI
+      showCatalogs(username);
+      loginLink.textContent = `Hola, ${username}`;
+      loginLink.style.pointerEvents = 'none';
+      logoutBtn.style.display = 'block';
+      const headerPara = document.querySelector('header p');
+      if (headerPara) headerPara.textContent = `Bienvenido, ${username}`;
+    }
+
+    function logout() {
+      localStorage.removeItem('biblioteca_user');
+      const sec = document.getElementById('catalogsSection');
+      if (sec) sec.remove();
+      loginLink.textContent = 'Inicio de sesión';
+      loginLink.style.pointerEvents = '';
+      logoutBtn.style.display = 'none';
+      const headerPara = document.querySelector('header p');
+      if (headerPara) headerPara.textContent = 'Descubre mundos nuevos, administra tus préstamos y lleva tu biblioteca digital con un estilo minimalista en rosa y morado.';
+    }
+
+    logoutBtn.addEventListener('click', logout);
+
+    // Auto-login if user stored
+    const stored = localStorage.getItem('biblioteca_user');
+    if (stored) {
+      setLoggedInState(stored);
+      // mark tasks
+      // update TODOs
+    }
+  </script>
+</body>
+</html>
