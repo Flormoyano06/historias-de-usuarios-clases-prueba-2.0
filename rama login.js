@@ -15,8 +15,3 @@ class Usuario {
         }
     }
 }
-
-// Ejemplo de uso
-const usuario1 = new Usuario("florencia", "1234");
-
-console.log(usuario1.iniciarSesion("florencia", "1234"));
