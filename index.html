@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Virtual</title>
+  <style>
+    :root {
+      --bg: #f5f0fb;
+      --surface: #ffffff;
+      --text: #2c1b45;
+      --accent: #7b42f6;
+      --accent-soft: #c8b3ff;
+      --border: #d6c5ff;
+      --shadow: rgba(123, 66, 246, 0.18);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1b1136;
+        --surface: #2a1f45;
+        --text: #f3e8ff;
+        --accent: #b297ff;
+        --accent-soft: #7f6cff;
+        --border: #6045a8;
+        --shadow: rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top left, rgba(123, 66, 246, 0.18), transparent 35%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(123, 66, 246, 0.9), rgba(164, 113, 255, 0.7));
+      color: white;
+      clip-path: ellipse(100% 90% at 50% 0%);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 4vw, 4rem);
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 1rem auto 0;
+      max-width: 680px;
+      font-size: 1.05rem;
+      opacity: 0.95;
+    }
+
+    main {
+      padding: 2rem 1rem 3rem;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(123, 66, 246, 0.2);
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+    }
+
+    .hero h2 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 1.6rem;
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .menu {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .menu a {
+      display: block;
+      padding: 1.15rem 1.25rem;
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 40px var(--shadow);
+      transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .menu a:hover {
+      transform: translateY(-2px);
+      background: rgba(123, 66, 246, 0.08);
+      box-shadow: 0 28px 50px rgba(0, 0, 0, 0.12);
+    }
+
+    .menu a span {
+      display: block;
+      font-size: 0.9rem;
+      color: rgba(44, 27, 69, 0.8);
+    }
+
+    .config-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .config-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.2rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(123, 66, 246, 0.18), rgba(183, 117, 255, 0.18));
+      border: 1px solid rgba(123, 66, 246, 0.25);
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: none;
+      width: 100%;
+    }
+
+    .config-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(123, 66, 246, 0.12);
+    }
+
+    .panel {
+      margin-top: 1rem;
+      padding: 1.5rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(123, 66, 246, 0.16);
+      display: none;
+      gap: 1rem;
+    }
+
+    .panel.visible {
+      display: grid;
+    }
+
+    .panel label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .panel select {
+      appearance: none;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(123, 66, 246, 0.25);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .panel .status {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: rgba(44, 27, 69, 0.85);
+    }
+
+    @media (max-width: 700px) {
+      .config-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero {
+        padding: 1.5rem;
+      }
+
+      .menu a {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Biblioteca Virtual</h1>
+    <p>Descubre mundos nuevos, administra tus préstamos y lleva tu biblioteca digital en tonos morados suaves.</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Bienvenido a tu biblioteca en línea</h2>
+      <p>Accede al registro, gestiona préstamos y devoluciones, consulta el catálogo de libros y personaliza tu experiencia con un diseño moderno inspirado en violetas claros.</p>
+    </section>
+
+    <div class="config-row">
+      <button class="config-button" id="toggleLang">Cambiar idioma</button>
+      <button class="config-button" id="toggleGenre">Elegir género</button>
+    </div>
+
+    <section class="panel" id="configPanel">
+      <label>
+        Idioma
+        <select id="languageSelect">
+          <option value="es">Español</option>
+          <option value="en">Inglés</option>
+        </select>
+      </label>
+
+      <label>
+        Género de libro
+        <select id="genreSelect">
+          <option value="fantasia">Fantasía</option>
+          <option value="misterio">Misterio</option>
+          <option value="romance">Romance</option>
+          <option value="ciencia">Ciencia ficción</option>
+          <option value="historia">Historia</option>
+        </select>
+      </label>
+
+      <div class="status" id="statusText">Idioma: Español · Género: Fantasía</div>
+    </section>
+
+    <section class="menu">
+      <a href="rama login.js">Inicio de sesión<span>Accede a tu cuenta</span></a>
+      <a href="rama-registro-usuarios.js">Registro de usuarios<span>Crea una cuenta nueva</span></a>
+      <a href="rama-perfil-usuarios.js">Perfil de usuario<span>Ver y editar tu información</span></a>
+      <a href="rama-agregar-libros.js">Agregar libros<span>Registra nuevos títulos</span></a>
+      <a href="rama-prestamos.js">Préstamos<span>Gestiona tus libros prestados</span></a>
+      <a href="rama-devoluciones">Devoluciones<span>Realiza la entrega de libros</span></a>
+      <a href="catalogo-libro.js">Catálogo de libros<span>Explora el inventario disponible</span></a>
+    </section>
+  </main>
+
+  <script>
+    const configPanel = document.getElementById('configPanel');
+    const toggleLang = document.getElementById('toggleLang');
+    const toggleGenre = document.getElementById('toggleGenre');
+    const languageSelect = document.getElementById('languageSelect');
+    const genreSelect = document.getElementById('genreSelect');
+    const statusText = document.getElementById('statusText');
+
+    let isPanelVisible = false;
+
+    function updateStatus() {
+      const languageLabel = languageSelect.options[languageSelect.selectedIndex].text;
+      const genreLabel = genreSelect.options[genreSelect.selectedIndex].text;
+      statusText.textContent = `Idioma: ${languageLabel} · Género: ${genreLabel}`;
+    }
+
+    function togglePanel() {
+      isPanelVisible = !isPanelVisible;
+      configPanel.classList.toggle('visible', isPanelVisible);
+    }
+
+    toggleLang.addEventListener('click', () => {
+      languageSelect.value = languageSelect.value === 'es' ? 'en' : 'es';
+      updateStatus();
+      if (!isPanelVisible) togglePanel();
+    });
+
+    toggleGenre.addEventListener('click', () => {
+      const nextIndex = (genreSelect.selectedIndex + 1) % genreSelect.options.length;
+      genreSelect.selectedIndex = nextIndex;
+      updateStatus();
+      if (!isPanelVisible) togglePanel();
+    });
+
+    languageSelect.addEventListener('change', updateStatus);
+    genreSelect.addEventListener('change', updateStatus);
+
+    updateStatus();
+  </script>
+</body>
+</html>
