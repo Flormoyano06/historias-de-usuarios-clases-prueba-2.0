@@ -1,0 +1,112 @@
+@startuml
+
+title Sistema de Biblioteca Virtual
+
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+skinparam class {
+BackgroundColor #F8F5FF
+BorderColor #6C63FF
+ArrowColor #555555
+FontColor #333333
+FontSize 12
+}
+
+skinparam package {
+BackgroundColor #EFEAFF
+BorderColor #6C63FF
+}
+
+package "👤 Gestión de Usuarios" {
+
+class Usuario {
+- id : int
+- nombre : String
+- email : String
+- contraseña : String
++ registrarse()
++ iniciarSesion()
++ editarPerfil()
+}
+
+class PerfilUsuario {
+- foto : String
+- biografia : String
++ actualizarPerfil()
+}
+
+class Login {
++ validarCredenciales()
++ cerrarSesion()
+}
+
+Usuario "1" -- "1" PerfilUsuario
+Login ..> Usuario
+}
+
+package "📚 Gestión de Libros" {
+
+class Libro {
+- idLibro : int
+- titulo : String
+- autor : String
+- categoria : String
+- disponible : boolean
+}
+
+class Catalogo {
++ agregarLibro()
++ eliminarLibro()
++ listarLibros()
+}
+
+class BusquedaLibros {
++ buscarPorTitulo()
++ buscarPorAutor()
++ buscarPorCategoria()
+}
+
+Catalogo "1" -- "*" Libro
+BusquedaLibros ..> Catalogo
+}
+
+package "🔄 Gestión de Préstamos" {
+
+class Prestamo {
+- idPrestamo : int
+- fechaPrestamo : Date
+- fechaDevolucion : Date
+- estado : String
++ registrarPrestamo()
+}
+
+class Devolucion {
+- fechaEntrega : Date
++ devolverLibro()
+}
+
+Prestamo "1" -- "0..1" Devolucion
+Prestamo "" -- "1" Libro
+Usuario "1" -- "" Prestamo
+}
+
+package "🏛 Biblioteca" {
+
+class Biblioteca {
++ registrarUsuario()
++ prestarLibro()
++ devolverLibro()
++ gestionarCatalogo()
+}
+
+Biblioteca "1" -- "" Usuario
+Biblioteca "1" -- "" Libro
+Biblioteca ..> Catalogo
+Biblioteca ..> BusquedaLibros
+Biblioteca ..> Login
+}
+
+@enduml

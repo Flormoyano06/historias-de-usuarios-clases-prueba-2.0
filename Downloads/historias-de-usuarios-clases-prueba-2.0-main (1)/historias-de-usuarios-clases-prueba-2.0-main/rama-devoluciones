@@ -1,0 +1,21 @@
+class Prestamo {
+    constructor() {
+        this.prestamos = [
+            { usuario: "Florencia", libro: "El Principito" },
+            { usuario: "Juan", libro: "Don Quijote de la Mancha" }
+        ];
+    }
+
+    devolverLibro(libro) {
+        const indice = this.prestamos.findIndex(
+            prestamo => prestamo.libro === libro
+        );
+
+        if (indice !== -1) {
+            this.prestamos.splice(indice, 1);
+            return "Libro devuelto correctamente";
+        } else {
+            return "El libro no se encuentra prestado";
+        }
+    }
+}
